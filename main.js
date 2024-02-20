@@ -1,7 +1,11 @@
 const API_KEY = 'API_KEY';
 let news = [];
 const getLatestNews = async () =>{
-    const url = new url('https://neewsapi.netlify.app/top-headLines?&q=${keyword}&country=kr&pageSize=${PAGE_SIZE}&apiKey=${API_KEY}');
+    let q =""
+    let page = 1
+    let pageSize = 10
+    let category = "technology"
+    const url = new URL('https://neewsapi.netlify.app.app/top-headlines?country=kr&apiKey=' + API_KEY);
     const response = await fetch(url);
     const data = await response.json();
     news = data.articles;
