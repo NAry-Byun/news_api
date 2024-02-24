@@ -22,14 +22,7 @@
       max-width: 430px;
       margin:0px 20px
   }
-  .menus {
-    display: flex;
-    justify-content: center;
-    padding: 5px 0 4px;
-    border-top: 1px solid rgb(235, 235, 235);
-    border-bottom: 4px double black;
-    flex-wrap: wrap;
-  }
+  
   .menus button {
     margin: 5px;
     border: none;
@@ -142,3 +135,56 @@
   .col-lg-8{
       margin-top:1em
   }
+
+  @media screen and (max-width: 768px) {
+    .hide {
+        display: inline;
+    }
+    .menus {
+        display: none;
+    }
+    .icon-button {
+        padding: 8px 9px 9px;
+        margin-top: 5px;
+    }
+    .icon-button:hover {
+        background-color: beige;
+    }
+    .head-line {
+        display: flex;
+        justify-content: space-between;
+    }
+    #closeMobileMenu {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 768px) {
+  .menus {
+    /* display: none; */ /* 기존 코드에서 display: none; 주석 처리 */
+    
+    top: 50px;
+    left: 0;
+    width: 100%;
+    background-color: #f9f9f9;
+    border-top: 1px solid #ccc;
+     display: flex;
+    justify-content: center;
+    padding: 5px 0 4px;
+    border-top: 1px solid rgb(235, 235, 235);
+    border-bottom: 4px double black;
+    flex-wrap: wrap;
+  }
+
+  .menus button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    background-color: #f9f9f9;
+    color: #333;
+    cursor: pointer;
+  }
+}
