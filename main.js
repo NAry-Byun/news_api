@@ -1,3 +1,5 @@
+
+
 const API_KEY = "b1fe516cb2ff4032b010ec5773f3a973";
 let articles = [];
 let page = 1;
@@ -177,3 +179,4 @@ const closeNav = () => {
   document.getElementById("mySidenav").style.width = "0";
 };
 getLatestNews();
+
