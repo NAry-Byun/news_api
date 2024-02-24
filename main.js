@@ -1,62 +1,54 @@
-
-
 const API_KEY = "b1fe516cb2ff4032b010ec5773f3a973";
 let articles = [];
 let page = 1;
 let totalPage = 1;
 const PAGE_SIZE = 10;
-
-
-let menus = document.querySelectorAll("#menu-list button");
-menus.forEach((menu) =>
-  menu.addEventListener("click", (e) => getNewsByTopic(e))
-);
-
-
-
 let url = new URL(
-  `https://neewsapi.netlify.app/top-headlines?country=kr&pageSize=${PAGE_SIZE}`
+  `https://neewsapi.netlify.app/top-headlines`
 );
+url.searchParams.append('country', 'kr');
+url.searchParams.append('pageSize', PAGE_SIZE);
+url.searchParams.append('apiKey', API_KEY); // API 키를 쿼리 문자열에 추가
+
 let menus = document.querySelectorAll("#menu-list button");
 menus.forEach((menu) =>
   menu.addEventListener("click", (e) => getNewsByTopic(e))
 );
-
 
 const getNews = async () => {
   try {
     url.searchParams.set("page", page);
+    console.log("Rrr", url);
     let response = await fetch(url);
     let data = await response.json();
     if (response.status == 200) {
+      console.log("resutl", data);
       if (data.totalResults == 0) {
         page = 0;
         totalPage = 0;
+        renderPagination();
         throw new Error("검색어와 일치하는 결과가 없습니다");
       }
 
       articles = data.articles;
       totalPage = Math.ceil(data.totalResults / PAGE_SIZE);
       render();
+      renderPagination();
     } else {
       page = 0;
       totalPage = 0;
+      renderPagination();
       throw new Error(data.message);
     }
   } catch (e) {
     errorRender(e.message);
     page = 0;
     totalPage = 0;
+    renderPagination();
   }
 };
-
-
-
 const getLatestNews = () => {
-  page = 1;
-  url = new URL(
-    `https://noona-times-v2.netlify.app/top-headlines?country=kr&pageSize=${PAGE_SIZE}&apiKey=${API_KEY}`
-  );
+  page = 1; // 9. 새로운거 search마다 1로 리셋
   getNews();
 };
 
@@ -64,9 +56,7 @@ const getNewsByTopic = (event) => {
   const topic = event.target.textContent.toLowerCase();
 
   page = 1;
-  url = new URL(
-    `https://noona-times-v2.netlify.app/top-headlines?country=kr&pageSize=${PAGE_SIZE}&category=${topic}&apiKey=${API_KEY}`
-  );
+  url.searchParams.set('category', topic); // 토픽에 따른 쿼리 문자열 설정
   getNews();
 };
 
@@ -83,9 +73,7 @@ const getNewsByKeyword = () => {
   const keyword = document.getElementById("search-input").value;
 
   page = 1;
-  url = new URL(
-    `https://noona-times-v2.netlify.app/top-headlines?q=${keyword}&country=kr&pageSize=${PAGE_SIZE}&apiKey=${API_KEY}`
-  );
+  url.searchParams.set('q', keyword); // 검색어에 따른 쿼리 문자열 설정
   getNews();
 };
 
@@ -121,7 +109,45 @@ const render = () => {
 
   document.getElementById("news-board").innerHTML = resultHTML;
 };
+const renderPagination = () => {
+  let paginationHTML = ``;
+  let pageGroup = Math.ceil(page / 5);
+  let last = pageGroup * 5;
+  if (last > totalPage) {
+    last = totalPage;
+  }
+  let first = last - 4 <= 0 ? 1 : last - 4;
+  if (first >= 6) {
+    paginationHTML = `<li class="page-item" onclick="pageClick(1)">
+                        <a class="page-link" href='#js-bottom'>&lt;&lt;</a>
+                      </li>
+                      <li class="page-item" onclick="pageClick(${page - 1})">
+                        <a class="page-link" href='#js-bottom'>&lt;</a>
+                      </li>`;
+  }
+  for (let i = first; i <= last; i++) {
+    paginationHTML += `<li class="page-item ${i == page ? "active" : ""}" >
+                        <a class="page-link" href='#js-bottom' onclick="pageClick(${i})" >${i}</a>
+                       </li>`;
+  }
 
+  if (last < totalPage) {
+    paginationHTML += `<li class="page-item" onclick="pageClick(${page + 1})">
+                        <a  class="page-link" href='#js-program-detail-bottom'>&gt;</a>
+                       </li>
+                       <li class="page-item" onclick="pageClick(${totalPage})">
+                        <a class="page-link" href='#js-bottom'>&gt;&gt;</a>
+                       </li>`;
+  }
+
+  document.querySelector(".pagination").innerHTML = paginationHTML;
+};
+
+const pageClick = (pageNum) => {
+  page = pageNum;
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  getNews();
+};
 const errorRender = (message) => {
   document.getElementById(
     "news-board"
@@ -135,5 +161,4 @@ const openNav = () => {
 const closeNav = () => {
   document.getElementById("mySidenav").style.width = "0";
 };
-
-
+getLatestNews();
