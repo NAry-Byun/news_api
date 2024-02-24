@@ -6,6 +6,14 @@ let page = 1;
 let totalPage = 1;
 const PAGE_SIZE = 10;
 
+
+let menus = document.querySelectorAll("#menu-list button");
+menus.forEach((menu) =>
+  menu.addEventListener("click", (e) => getNewsByTopic(e))
+);
+
+
+
 let url = new URL(
   `https://neewsapi.netlify.app/top-headlines?country=kr&pageSize=${PAGE_SIZE}`
 );
